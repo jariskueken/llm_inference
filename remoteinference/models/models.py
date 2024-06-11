@@ -3,8 +3,8 @@ import requests
 from http import HTTPStatus
 from typing import Any
 
-from src.interfaces.llm import LLMInterface
-from src.util.config import ServerConfig
+from remoteinference.interfaces.llm import LLMInterface
+from remoteinference.util.config import ServerConfig
 
 COMPLETION_ENDPOINT = "completion"
 CHAT_ENDPOINT = "v1/chat/completions"
