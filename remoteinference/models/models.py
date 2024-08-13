@@ -4,7 +4,6 @@ from http import HTTPStatus
 from typing import Any
 
 from remoteinference.interfaces.llm import LLMInterface
-from remoteinference.util.config import ServerConfig
 
 COMPLETION_ENDPOINT = "completion"
 CHAT_ENDPOINT = "v1/chat/completions"
@@ -19,8 +18,22 @@ class LlamaCPPLLM(LLMInterface):
     """
 
     def __init__(self,
-                 cfg: ServerConfig) -> None:
-        self.config = cfg
+                 server_address: str,
+                 server_port: int,
+                 api_key: str = "") -> None:
+        """
+        Initalize the model with the server parameters of the LLamaCPP server.
+
+        :param server_address: The address of the server, contains only the
+            host url. If hosted locally just add localhost.
+        :param server_port: The port of where to reach the server via TCP as
+            we use http protocoll.
+        :param api_key: The api key to authenticate with the server. Defaults
+            to "" if no key is used.
+        """
+        self.server_address = server_address
+        self.server_port = server_port
+        self.api_key = api_key
 
     def completion(self,
                    prompt: str,
@@ -77,7 +90,6 @@ class LlamaCPPLLM(LLMInterface):
                    "max_tokens": max_tokens,
                    **kwargs}
 
-        logger.debug(f"Sending the following chat completion prompt:\nPrompt:\n{payload}")
         response = self.__send_request(payload, CHAT_ENDPOINT)
         logger.debug(f"\nResult:\n{response}")
 
@@ -100,11 +112,11 @@ class LlamaCPPLLM(LLMInterface):
         headers = {
             "accept": "application/json",
             "content-type": "application/json",
-            "Authorization": f"Bearer {self.config.api_key}"
+            "Authorization": f"Bearer {self.api_key}"
         }
 
-        server_url = f"http://{self.config.server_address}:\
-{self.config.server_port}/{api_endpoint}"
+        server_url = f"http://{self.server_address}:\
+{self.server_port}/{api_endpoint}"
         logger.info(f"Sending request to {server_url}")
         logger.debug(f"\nRaw request content:\n{payload}")
         logger.debug(f"\nRaw request header:\n{headers}")
