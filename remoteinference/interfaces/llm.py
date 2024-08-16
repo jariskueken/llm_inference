@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class LLMInterface(ABC):
@@ -29,8 +30,8 @@ class LLMInterface(ABC):
 
         Returns
         -------
-        str
-            The completion for the prompt.
+        Any
+            JSON containing the full return.
         """
         raise NotImplementedError
 
@@ -39,7 +40,7 @@ class LLMInterface(ABC):
                         messages: list[dict[str, str]],
                         temperature: float,
                         max_tokens: int,
-                        **kwargs) -> str:
+                        **kwargs) -> Any:
         """
         Generate a completion for a chat prompt.
 
@@ -57,7 +58,7 @@ class LLMInterface(ABC):
 
         Returns
         -------
-        str
-            The completion for the chat prompt.
+        Any
+            JSON containing the full return.
         """
         raise NotImplementedError

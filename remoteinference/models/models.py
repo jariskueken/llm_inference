@@ -1,5 +1,7 @@
 import logging
 import requests
+from openai import OpenAI
+
 from http import HTTPStatus
 from typing import Any
 
@@ -13,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class LlamaCPPLLM(LLMInterface):
     """
-    Implementation if the generic LlmInterface.
+    Implementation of the generic LlmInterface.
     This is for talking to a server hosting a custom LLM
     """
 
@@ -140,6 +142,79 @@ server: {e}")
 
         if response.content:
             # only return json if we do not have an empty response
+            return response.json()
+        else:
+            return None
+
+
+# TODO: implement retry logic and handle models not suited for completions
+# endpoint. Also add validation for the selected model type.
+class OpenAILLM(LLMInterface):
+    """
+    Implementation of the generic LlmInterface.
+    This is for talking to the OpenAI API.
+    """
+
+    client: OpenAI
+    api_key: str
+    model: str
+
+    def __init__(self,
+                 api_key: str,
+                 model: str = 'gpt-4o-mini') -> None:
+        """
+        Initalize the model with the OpenAI API key.
+
+        :param api_key: The api key to authenticate with the OpenAI API.
+        :param model: The model to use for completion. Defaults to
+            "gpt-4o-mini". For a list of model options please
+            ref: https://platform.openai.com/docs/models,
+            ref: https://openai.com/api/pricing/
+        """
+        self.api_key = api_key
+        self.client = OpenAI(api_key=api_key)
+
+        # TODO: model selection
+        self.model = model
+
+    def completion(self,
+                   prompt: str,
+                   temperature: float,
+                   max_tokens: int,
+                   **kwargs) -> Any:
+        try:
+            response = self.client.completions.create(
+                model=self.model,
+                prompt=prompt,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                **kwargs
+            )
+        except Exception as e:
+            logger.error(f"Error trying to query the OpenAI API: {e}")
+
+        if response:
+            return response.json()
+        else:
+            return None
+
+    def chat_completion(self,
+                        messages: list[dict[str, str]],
+                        temperature: float,
+                        max_tokens: int,
+                        **kwargs) -> Any:
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                **kwargs
+            )
+        except Exception as e:
+            logger.error(f"Error trying to query the OpenAI API: {e}")
+
+        if response:
             return response.json()
         else:
             return None
