@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERISON = '0.0.3'
+VERISON = '0.0.4'
 DESCRIPTION = 'Remote inference for language models'
 
 setup(
