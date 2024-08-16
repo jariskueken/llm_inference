@@ -1,5 +1,6 @@
 import logging
 import requests
+import json
 from openai import OpenAI
 
 from http import HTTPStatus
@@ -194,7 +195,7 @@ class OpenAILLM(LLMInterface):
             logger.error(f"Error trying to query the OpenAI API: {e}")
 
         if response:
-            return response.json()
+            return response["content"]
         else:
             return None
 
@@ -202,7 +203,7 @@ class OpenAILLM(LLMInterface):
                         messages: list[dict[str, str]],
                         temperature: float,
                         max_tokens: int,
-                        **kwargs) -> Any:
+                        **kwargs) -> dict[str, Any]:
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
@@ -215,6 +216,6 @@ class OpenAILLM(LLMInterface):
             logger.error(f"Error trying to query the OpenAI API: {e}")
 
         if response:
-            return response.json()
+            return json.loads(response.json())
         else:
             return None

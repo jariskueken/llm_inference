@@ -40,7 +40,7 @@ class LLMInterface(ABC):
                         messages: list[dict[str, str]],
                         temperature: float,
                         max_tokens: int,
-                        **kwargs) -> Any:
+                        **kwargs) -> dict[str, Any]:
         """
         Generate a completion for a chat prompt.
 
