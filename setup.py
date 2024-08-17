@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
-VERISON = '0.0.5'
+VERSION = '0.0.6'
 DESCRIPTION = 'Remote inference for language models'
 
 setup(
     name="remoteinference",
-    version=VERISON,
+    version=VERSION,
     author="Jaris Küken",
     author_email="jaris.kueken@gmail.com",
     description=DESCRIPTION,
