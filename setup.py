@@ -12,15 +12,14 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     packages=find_packages(),
-    install_requires=[],
+    install_requires=[
+        "openai",
+        "together",
+    ],
     python_requires='>=3.10',
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
-    ],
-    install_requires=[
-        "openai",
-        "together",
     ],
 )
