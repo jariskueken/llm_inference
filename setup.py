@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.6'
+VERSION = '0.0.7'
 DESCRIPTION = 'Remote inference for language models'
 
 setup(
@@ -18,5 +18,9 @@ setup(
         "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
+    ],
+    install_requires=[
+        "openai",
+        "together",
     ],
 )
