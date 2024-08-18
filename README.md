@@ -2,7 +2,7 @@
 
 Simple package to perform remote inference on language models of different providers.
 
-## Getting started
+## Getting Started
 Install the package
 ```python
 pip install remoteinference
@@ -51,4 +51,49 @@ response = model.chat_completion(
 print(response['choices'][0]['message']['content'])
 
 ```
+## Supported Models
 
+### OpenAI
+Initialize an OpenAI model by calling:
+
+```python
+from remoteinference.models import OpenAILLM
+
+model = OpenAILLM(
+    api_key='your_key',
+    model='gpt-4o-mini'
+)
+```
+
+To view a full list of available models for the OpenAI endpoint see [OpenAI docs](https://platform.openai.com/docs/models)
+
+
+### TogetherAI
+Initialize an OpenAI model by calling:
+
+```python
+from remoteinference.models import TogetherAILLM
+
+model = TogetherAILLM(
+    api_key='your_key',
+    model='meta-llama/Llama-3-8b-hf'
+)
+```
+
+To view a full list of available models for the OpenAI endpoint see [TogetherAI docs](https://docs.together.ai/docs/language-and-code-models)
+
+### LlamaCPP
+This package also provides functionality to query a self-hosted language model via [llama.cpp](https://github.com/ggerganov/llama.cpp)
+
+To initalize a model which is hosted locally just do:
+
+```python
+from remoteinference.models import LlamaCPPLLM
+
+model = LlamaCPPLLM(
+    server_address='localhost',
+    server_port=8080
+)
+```
+
+To see the full specifications of the llama.cpp webserver see [server docs](https://github.com/ggerganov/llama.cpp/blob/master/examples/server/README.md).
