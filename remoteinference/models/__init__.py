@@ -1,1 +1,2 @@
-from .models import LlamaCPPLLM, OpenAILLM, TogetherAILLM  # noqa: F401
+from .models import LlamaCPPLLM, OpenAILLM, TogetherAILLM, \
+      AnthropicLLM  # noqa: F401

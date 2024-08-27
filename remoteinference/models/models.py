@@ -3,6 +3,7 @@ import requests
 import json
 from openai import OpenAI
 from together import Together
+from anthropic import Anthropic
 from http import HTTPStatus
 from typing import Any
 
@@ -301,6 +302,89 @@ Use chat_completion instead.")
             try:
                 return json.loads(response.model_dump_json())
 
+            # HACK: Currently hacky solution to handle possible responses which
+            # are not json parsable
+            except Exception as e:
+                logger.warn(f"Error trying to parse the response to json: \
+{e}. Return type will differ now.")
+                return response
+        else:
+            return None
+
+
+class AnthropicLLM(LLMInterface):
+    """
+    Implementation of the generic LlmInterface.
+    This is for talking to the Anthropic AI API.
+    """
+
+    client: Anthropic
+    api_key: str
+
+    def __init__(self,
+                 api_key: str,
+                 model: str = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
+                 ) -> None:
+        """
+        Initalize the model with the Together AI API key.
+
+        :param api_key: The api key to authenticate with the Together AI API.
+        :param model: The model to use for completion. Defaults to
+            "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo". For a list of model
+            options please ref: https://docs.together.ai/docs/chat-models
+        """
+        self.api_key = api_key
+        self.client = Anthropic(api_key=api_key)
+
+        # TODO: model selection
+        self.model = model
+
+    # FIXME: completion setup properly
+    # ref: https://github.com/anthropics/anthropic-sdk-python
+    def completion(self,
+                   prompt: str,
+                   temperature: float,
+                   max_tokens: int,
+                   **kwargs) -> Any:
+        logger.warn("Completion model is currently not properly implemented \
+as a there is no guarantee that the selected model is suited for completions. \
+Use chat_completion instead.")
+        try:
+            response = self.client.completions.create(
+                model=self.model,
+                prompt=prompt,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                **kwargs
+            )
+        except Exception as e:
+            logger.error(f"Error trying to query the Together AI API: {e}")
+
+        if response:
+            return response["content"]
+        else:
+            return None
+
+    def chat_completion(self,
+                        messages: list[dict[str, str]],
+                        temperature: float,
+                        max_tokens: int,
+                        **kwargs) -> dict[str, Any]:
+
+        try:
+            response = self.client.messages.create(
+                model=self.model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                **kwargs,
+            )
+        except Exception as e:
+            logger.error(f"Error trying to query the Together AI API: {e}")
+
+        if response:
+            try:
+                return response.to_dict()
             # HACK: Currently hacky solution to handle possible responses which
             # are not json parsable
             except Exception as e:
