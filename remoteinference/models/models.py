@@ -358,7 +358,7 @@ Use chat_completion instead.")
                 **kwargs
             )
         except Exception as e:
-            logger.error(f"Error trying to query the Together AI API: {e}")
+            logger.error(f"Error trying to query the Anthropic API: {e}")
 
         if response:
             return response["content"]
@@ -371,16 +371,34 @@ Use chat_completion instead.")
                         max_tokens: int,
                         **kwargs) -> dict[str, Any]:
 
+        system_prompt = ""
+        # separate system prompt from messages list
+        for message in messages:
+            # assume that we have maximum one system promp in list of messages
+            if message["role"] == "system":
+                system_prompt = message["content"]
+                messages.remove(message)
+                break
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                **kwargs,
-            )
+            if system_prompt:
+                response = self.client.messages.create(
+                    model=self.model,
+                    messages=messages,
+                    system=system_prompt,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    **kwargs,
+                )
+            else:
+                response = self.client.messages.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    **kwargs,
+                )
         except Exception as e:
-            logger.error(f"Error trying to query the Together AI API: {e}")
+            logger.error(f"Error trying to query the Anthropic API: {e}")
 
         if response:
             try:
