@@ -1,2 +1,2 @@
 from .models import LlamaCPPLLM, OpenAILLM, TogetherAILLM, \
-      AnthropicLLM  # noqa: F401
+      AnthropicLLM, GeminiLLM  # noqa: F401

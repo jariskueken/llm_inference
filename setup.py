@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.9'
+VERSION = '0.0.10'
 DESCRIPTION = 'Remote inference for language models'
 
 setup(
@@ -16,6 +16,7 @@ setup(
         "openai",
         "together",
         "anthropic",
+        "google-generativeai"
     ],
     python_requires='>=3.10',
     classifiers=[
