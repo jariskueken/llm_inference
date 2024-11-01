@@ -7,6 +7,7 @@ from anthropic import Anthropic
 from google.generativeai import GenerativeModel, GenerationConfig, configure
 from http import HTTPStatus
 from typing import Any
+from pydantic import BaseModel
 
 from remoteinference.interfaces.llm import LLMInterface
 from remoteinference.util.parsing import gemini_response_to_openai
@@ -225,6 +226,29 @@ Use chat_completion instead.")
 
         if response:
             return json.loads(response.json())
+        else:
+            return None
+
+    def chat_completion_structured(self,
+                                   messages: list[dict[str, str]],
+                                   temperature: float,
+                                   max_tokens: int,
+                                   response_format: BaseModel,
+                                   **kwargs) -> Any:
+        try:
+            response = self.client.beta.chat.completions.parse(
+                model=self.model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                response_format=response_format,
+                **kwargs
+            )
+        except Exception as e:
+            logger.error(f"Error trying to query the OpenAI API: {e}")
+
+        if response:
+            return response
         else:
             return None
 
