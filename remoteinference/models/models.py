@@ -104,6 +104,18 @@ class LlamaCPPLLM(LLMInterface):
 
         return response
 
+    def chat_completion_structured(self,
+                                   messages: list[dict[str, str]],
+                                   temperature: float,
+                                   max_tokens: int,
+                                   response_format: BaseModel,
+                                   **kwargs):
+        return super().chat_completion_structured(messages,
+                                                  temperature,
+                                                  max_tokens,
+                                                  response_format,
+                                                  **kwargs)
+
     def __send_request(self,
                        payload: dict[str, Any],
                        api_endpoint: str) -> Any:
@@ -338,6 +350,18 @@ Use chat_completion instead.")
         else:
             return None
 
+    def chat_completion_structured(self,
+                                   messages: list[dict[str, str]],
+                                   temperature: float,
+                                   max_tokens: int,
+                                   response_format: BaseModel,
+                                   **kwargs):
+        return super().chat_completion_structured(messages,
+                                                  temperature,
+                                                  max_tokens,
+                                                  response_format,
+                                                  **kwargs)
+
 
 class AnthropicLLM(LLMInterface):
     """
@@ -443,6 +467,18 @@ Use chat_completion instead.")
                 return response
         else:
             return None
+
+    def chat_completion_structured(self,
+                                   messages: list[dict[str, str]],
+                                   temperature: float,
+                                   max_tokens: int,
+                                   response_format: BaseModel,
+                                   **kwargs):
+        return super().chat_completion_structured(messages,
+                                                  temperature,
+                                                  max_tokens,
+                                                  response_format,
+                                                  **kwargs)
 
 
 class GeminiLLM(LLMInterface):
@@ -558,3 +594,15 @@ please select chat completion instead")
                 return response
         else:
             return None
+
+    def chat_completion_structured(self,
+                                   messages: list[dict[str, str]],
+                                   temperature: float,
+                                   max_tokens: int,
+                                   response_format: BaseModel,
+                                   **kwargs):
+        return super().chat_completion_structured(messages,
+                                                  temperature,
+                                                  max_tokens,
+                                                  response_format,
+                                                  **kwargs)
